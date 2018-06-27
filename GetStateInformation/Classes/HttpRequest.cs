@@ -10,18 +10,22 @@ using System.Threading.Tasks;
 
 namespace GetStateInformation.Classes
 {
-    public static class HttpRequestClass
+    public class StateRequest
     {
-        private static List<StateInformation> stateList;
+        private List<StateInformation> stateList;
 
-        public static List<StateInformation> StateList
+        public  List<StateInformation> StateList
         {
             get { return stateList; }
             set { stateList = value; }
         }
 
+        public string statusCode { get; set; }
+        public string statusDescription { get; set; }
+        public string capital { get; set; }
+        public string largestCity { get; set; }
 
-        public static void submitRequest(string url)
+        public void submitRequest(string url)
         {
             try
             {
@@ -29,6 +33,8 @@ namespace GetStateInformation.Classes
                 List<StateInformation> states = new List<StateInformation>();
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(new Uri(url));
                 HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+                statusCode=response.StatusCode.ToString();
+                statusDescription = response.StatusDescription.ToString();
                 Stream stream = response.GetResponseStream();
                 var streamReader = new StreamReader(stream);
                 content = streamReader.ReadToEnd();
@@ -42,9 +48,9 @@ namespace GetStateInformation.Classes
             }
         }
 
-        public static void GetCapitalLargestCity(string inputString)
+        public void GetCapitalLargestCity(string inputString=null)
         {
-            if (!String.IsNullOrEmpty(inputString))
+            if (!String.IsNullOrEmpty(inputString.Trim()))
             {
                 if (stateList!=null)
                 {
@@ -54,8 +60,10 @@ namespace GetStateInformation.Classes
                             .Select(x => new { x.capital, x.largestCity });
                     if (a.FirstOrDefault() != null)
                     {
-                        Console.WriteLine("State Captial: " + a.FirstOrDefault().capital);
-                        Console.WriteLine("Largest City: " + a.FirstOrDefault().largestCity + "\n");
+                        capital = a.FirstOrDefault().capital;
+                        largestCity = a.FirstOrDefault().largestCity;
+                        Console.WriteLine("State Captial: " + capital);
+                        Console.WriteLine("Largest City: " + largestCity + "\n");
                     }
                     else
                         Console.WriteLine("No matching state found \n");

@@ -12,16 +12,16 @@ namespace GetStateInformation
 {
     //Add a using directive for System if the directive isn't already present.
 
-    class MainClass
+    public class MainClass
     {
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
-            string url = @"http://services.groupkt.com/state/get/USA/all";
-            string inputString = "";
+            const string url = @"http://services.groupkt.com/state/get/USA/all";
+            string inputString = string.Empty;
             do
             {
                 Console.WriteLine("Please enter a state or its abbreviation( or Type 'x' to quit): ");
-                inputString = Console.ReadLine();
+                inputString = Console.ReadLine().Trim();
                 switch (inputString)
                 {
                     case "X":
@@ -29,8 +29,9 @@ namespace GetStateInformation
                     case "x":
                         break;
                     default:
-                        HttpRequestClass.submitRequest(url);
-                        HttpRequestClass.GetCapitalLargestCity(inputString);
+                        StateRequest request = new StateRequest();
+                        request.submitRequest(url);
+                        request.GetCapitalLargestCity(inputString);
                         break;
                 }
             }
